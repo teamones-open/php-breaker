@@ -1,6 +1,6 @@
 <?php
 
-namespace Teamones\Breaker;
+namespace Teamones\Breaker\Driver;
 
 use Teamones\Breaker\Adapters\AdapterInterface;
 
