@@ -1,0 +1,20 @@
+{
+    "name": "teamones/jsonrpc",
+    "description": "webman framework breaker component",
+    "type": "library",
+    "license": "Apache License",
+    "authors": [
+        {
+            "name": "Weijer Cheng",
+            "email": "weiwei163@foxmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Teamones\\Breaker\\": "src/"
+        }
+    }
+}
