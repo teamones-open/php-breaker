@@ -2,7 +2,7 @@
 
 namespace Teamones\Breaker;
 
-use LeoCarmo\CircuitBreaker\Adapters\AdapterInterface;
+use Teamones\Breaker\Adapters\AdapterInterface;
 
 class GoogleBreaker implements BreakerInterface
 {
