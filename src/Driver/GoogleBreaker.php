@@ -2,28 +2,48 @@
 
 namespace Teamones\Breaker\Driver;
 
-use Teamones\Breaker\Adapters\AdapterInterface;
+use Teamones\Breaker\Adapters\GoogleAdapterInterface;
 
 class GoogleBreaker implements BreakerInterface
 {
 
     /**
-     * @var AdapterInterface
+     * @var GoogleAdapterInterface
      */
-    protected static AdapterInterface $adapter;
+    protected static GoogleAdapterInterface $adapter;
 
     /**
-     * @param AdapterInterface $adapter
+     * @var array
      */
-    public static function setAdapter(AdapterInterface $adapter): void
+    protected static array $servicesSettings;
+
+    /**
+     * @var array
+     */
+    protected static array $globalSettings;
+
+    /**
+     * 250ms for bucket duration
+     * @var array
+     */
+    protected static array $defaultSettings = [
+        'timeWindow' => 10, // 10s
+        'buckets' => 40,
+        'k' => 1.5
+    ];
+
+    /**
+     * @param GoogleAdapterInterface $adapter
+     */
+    public static function setAdapter(GoogleAdapterInterface $adapter): void
     {
         self::$adapter = $adapter;
     }
 
     /**
-     * @return AdapterInterface
+     * @return GoogleAdapterInterface
      */
-    public static function getAdapter(): AdapterInterface
+    public static function getAdapter(): GoogleAdapterInterface
     {
         return self::$adapter;
     }

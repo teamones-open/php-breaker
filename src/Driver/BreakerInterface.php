@@ -2,13 +2,13 @@
 
 namespace Teamones\Breaker\Driver;
 
-use Teamones\Breaker\Adapters\AdapterInterface;
+use Teamones\Breaker\Adapters\GoogleAdapterInterface;
 
 interface BreakerInterface
 {
-    public static function setAdapter(AdapterInterface $adapter): void;
+    public static function setAdapter(GoogleAdapterInterface $adapter): void;
 
-    public static function getAdapter(): AdapterInterface;
+    public static function getAdapter(): GoogleAdapterInterface;
 
     public static function setGlobalSettings(array $settings): void;
 

@@ -11,7 +11,9 @@
     ],
     "require": {
         "php": ">=7.2.0",
-        "leocarmo/circuit-breaker-php": "^3.0"
+        "ext-redis": "*",
+        "leocarmo/circuit-breaker-php": "^3.0",
+        "symfony/rate-limiter": "^5.3"
     },
     "autoload": {
         "psr-4": {

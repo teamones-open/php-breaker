@@ -2,7 +2,7 @@
 
 namespace Teamones\Breaker\Adapters;
 
-interface AdapterInterface
+interface GoogleAdapterInterface
 {
 
     public function collectionAdd(string $service): void;
