@@ -57,10 +57,10 @@ class BreakerFactory
                     // TODO 还在开发中
                     $adapter = new GoogleRedisGoogleAdapter($redis, $redisNamespace);
 
-                    // Set redis adapter for CB
+                    // Set redis adapter for GB
                     GoogleBreaker::setAdapter($adapter);
 
-                    // Configure settings for CB
+                    // Configure settings for GB
                     GoogleBreaker::setGlobalSettings([
                         'timeWindow' => 10, // 窗口时间（s）
                         'buckets' => 40, // 桶大小
@@ -69,9 +69,6 @@ class BreakerFactory
                     static::$_instance = CircuitBreaker::class;
                     break;
             }
-
-
-
         }
         return static::$_instance;
     }

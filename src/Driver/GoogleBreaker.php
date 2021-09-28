@@ -28,8 +28,8 @@ class GoogleBreaker implements BreakerInterface
      */
     protected static array $defaultSettings = [
         'timeWindow' => 10, // 10s
-        'buckets' => 40,
-        'k' => 1.5
+        'buckets' => 40, // 桶大小
+        'k' => 1.5 // 倍值
     ];
 
     /**
@@ -53,7 +53,9 @@ class GoogleBreaker implements BreakerInterface
      */
     public static function setGlobalSettings(array $settings): void
     {
-
+        foreach (self::$defaultSettings as $defaultSettingKey => $defaultSettingValue) {
+            self::$globalSettings[$defaultSettingKey] = (int)($settings[$defaultSettingKey] ?? $defaultSettingValue);
+        }
     }
 
     /**
@@ -61,25 +63,35 @@ class GoogleBreaker implements BreakerInterface
      */
     public static function getGlobalSettings(): array
     {
-        return [];
+        return self::$globalSettings;
     }
 
     /**
+     * Set custom settings for each service
+     *
      * @param string $service
      * @param array $settings
      */
     public static function setServiceSettings(string $service, array $settings): void
     {
-
+        foreach (self::$defaultSettings as $defaultSettingKey => $defaultSettingValue) {
+            self::$servicesSettings[$service][$defaultSettingKey] =
+                (int)($settings[$defaultSettingKey] ?? self::$globalSettings[$defaultSettingKey] ?? $defaultSettingValue);
+        }
     }
 
     /**
+     * Get setting for a service, if not set, get from default settings
+     *
      * @param string $service
      * @param string $setting
+     * @return mixed
      */
     public static function getServiceSetting(string $service, string $setting)
     {
-
+        return self::$servicesSettings[$service][$setting]
+            ?? self::$globalSettings[$setting]
+            ?? self::$defaultSettings[$setting];
     }
 
     /**
@@ -88,6 +100,7 @@ class GoogleBreaker implements BreakerInterface
      */
     public static function isAvailable(string $service): bool
     {
+
         return true;
     }
 

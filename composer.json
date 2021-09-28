@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "php": ">=7.2.0",
+        "php": ">=7.3.0",
         "ext-redis": "*",
         "leocarmo/circuit-breaker-php": "^3.0",
         "symfony/rate-limiter": "^5.3"

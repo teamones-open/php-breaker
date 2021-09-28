@@ -1,0 +1,47 @@
+<?php
+
+namespace Teamones\Breaker\RollingWindow;
+
+use Teamones\Breaker\RollingWindow\Collection\RollingWindow;
+
+class Enforcer
+{
+    /**
+     * @var RollingWindow|null
+     */
+    protected static ?RollingWindow $_manager = null;
+
+    /**
+     * @var array
+     */
+    protected static array $_config = [];
+
+    /**
+     * @return RollingWindow
+     */
+    public static function instance(): ?RollingWindow
+    {
+        if (!isset(static::$_manager)) {
+            foreach (['size', 'interval'] as $key) {
+                if (empty(self::$_config[$key])) {
+                    throw new \RuntimeException("RollingWindow {$key} config not found");
+                }
+            }
+
+            $ignoreCurrent = !empty(self::$_config['ignore_current']) ? self::$_config['ignore_current'] : false;
+            static::$_manager = new RollingWindow(self::$_config['size'], self::$_config['interval'], $ignoreCurrent);
+        }
+
+        return static::$_manager;
+    }
+
+    /**
+     * @param $name
+     * @param $arguments
+     * @return mixed
+     */
+    public static function __callStatic($name, $arguments)
+    {
+        return static::instance()->{$name}(... $arguments);
+    }
+}
