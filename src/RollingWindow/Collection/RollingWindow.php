@@ -61,7 +61,7 @@ class RollingWindow
      */
     public function reduce(callable $callback)
     {
-        $span = self::span();
+        $span = $this->span();
 
         if ($span === 0 && $this->ignoreCurrent) {
             $diff = $this->size - 1;
@@ -81,10 +81,10 @@ class RollingWindow
      */
     private function span(): int
     {
-        $this->offset = intval(Timex::since($this->lastTime) / $this->interval);
+        $offset = intval(Timex::since($this->lastTime) / $this->interval);
 
-        if ($this->offset >= 0 && $this->offset < $this->size) {
-            return $this->offset;
+        if ($offset >= 0 && $offset < $this->size) {
+            return $offset;
         }
 
         return $this->size;
@@ -92,7 +92,7 @@ class RollingWindow
 
     private function updateOffset()
     {
-        $span = self::span();
+        $span = $this->span();
         if ($span <= 0) {
             return;
         }

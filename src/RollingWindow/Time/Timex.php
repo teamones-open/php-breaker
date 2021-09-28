@@ -4,21 +4,31 @@ namespace Teamones\Breaker\RollingWindow\Time;
 
 class Timex
 {
-    /**
-     * 当前纳秒时间
-     * @return array|false|float|int|int[]
-     */
-    public static function now()
+    protected static $initTime = 0;
+
+    public function __construct()
     {
-        return hrtime(true);
+        self::$initTime = strtotime("-1 year -1 month -1 day");
     }
 
     /**
-     *
-     * @return array|false|float|int|int[]
+     * 当前纳秒时间
+     * @return float
+     */
+    public static function now()
+    {
+        $nanoTime = hrtime();
+        $secondDate = (self::$initTime + $nanoTime[0]) . $nanoTime[1];
+        return floatval($secondDate);
+    }
+
+    /**
+     * @param $time
+     * @return float
      */
     public static function since($time)
     {
-        return hrtime(true) - $time;
+        $space = self::now() - $time;
+        return $space / 1e+6;
     }
 }

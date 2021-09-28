@@ -16,6 +16,16 @@ class Enforcer
      */
     protected static array $_config = [];
 
+
+    /**
+     * 设置配置
+     * @param array $config
+     */
+    public static function setConfig(array $config = [])
+    {
+        self::$_config = $config;
+    }
+
     /**
      * @return RollingWindow
      */
