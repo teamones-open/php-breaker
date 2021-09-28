@@ -2,7 +2,7 @@
     "name": "teamones/breaker",
     "description": "webman framework breaker component",
     "type": "library",
-    "license": "Apache License",
+    "license": "Apache-2.0",
     "authors": [
         {
             "name": "Weijer Cheng",
