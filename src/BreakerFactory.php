@@ -36,8 +36,8 @@ class BreakerFactory
 
 
             // 判断使用哪种熔断器模型
-            $breakerType =  !empty($config['type']) ? $config['type'] : 'circuit';
-            switch ($breakerType){
+            $breakerType = !empty($config['type']) ? $config['type'] : 'circuit';
+            switch ($breakerType) {
                 default:
                 case 'circuit':
                     $adapter = new CircuitRedisAdapter($redis, $redisNamespace);
@@ -54,17 +54,11 @@ class BreakerFactory
                     static::$_instance = CircuitBreaker::class;
                     break;
                 case 'google':
-                    // TODO 还在开发中
-                    $adapter = new GoogleRedisGoogleAdapter($redis, $redisNamespace);
-
-                    // Set redis adapter for GB
-                    GoogleBreaker::setAdapter($adapter);
-
                     // Configure settings for GB
                     GoogleBreaker::setGlobalSettings([
-                        'timeWindow' => 10, // 窗口时间（s）
-                        'buckets' => 40, // 桶大小
-                        'k' => 1.5 // 倍值
+                        'interval' => 250, // 每个块间隔250ms
+                        'buckets' => 40, // 一共分40个窗口
+                        'k' => 1.5, // 倍值
                     ]);
                     static::$_instance = CircuitBreaker::class;
                     break;

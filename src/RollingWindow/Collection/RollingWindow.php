@@ -21,6 +21,8 @@ class RollingWindow
 
     public bool $ignoreCurrent = false;
 
+    public float $proba = 1;
+
     /**
      * @param int $size
      * @param int $interval
@@ -45,6 +47,18 @@ class RollingWindow
         $this->lastTime = Timex::now();
 
         $this->ignoreCurrent = $ignoreCurrent;
+
+        $this->proba = $this->randFloat();
+    }
+
+    /**
+     * @param int $min
+     * @param int $max
+     * @return float|int|mixed
+     */
+    private function randFloat($min = 0, $max = 1)
+    {
+        return $min + mt_rand() / mt_getrandmax() * ($max - $min);
     }
 
     /**
