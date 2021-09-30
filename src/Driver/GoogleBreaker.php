@@ -109,7 +109,7 @@ class GoogleBreaker
             return true;
         }
 
-        // dropRatio的值接近1时请求大概率会被熔断器给拦截掉
+        // When the dropratio is close to 1, the request probability will be blocked by the fuse
         if ($dropRatio > self::$services[$service]->proba) {
             return false;
         }

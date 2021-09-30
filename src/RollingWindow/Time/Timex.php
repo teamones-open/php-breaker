@@ -12,10 +12,9 @@ class Timex
     }
 
     /**
-     * 当前纳秒时间
      * @return float
      */
-    public static function now()
+    public static function now(): float
     {
         $nanoTime = hrtime();
         $secondDate = (self::$initTime + $nanoTime[0]) . $nanoTime[1];
@@ -26,7 +25,7 @@ class Timex
      * @param $time
      * @return float
      */
-    public static function since($time)
+    public static function since($time): float
     {
         $space = self::now() - $time;
         return $space / 1e+6;

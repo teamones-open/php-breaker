@@ -40,10 +40,10 @@ class RollingWindow
             $this->interval = $interval;
         }
 
-        // 初始化 Window
+        // Initialize window
         $this->windows = new Window($size);
 
-        // 初始化当前时间
+        // Initialize current nano time
         $this->lastTime = Timex::now();
 
         $this->ignoreCurrent = $ignoreCurrent;
@@ -54,9 +54,9 @@ class RollingWindow
     /**
      * @param int $min
      * @param int $max
-     * @return float|int|mixed
+     * @return float|int
      */
-    private function randFloat($min = 0, $max = 1)
+    private function randFloat(int $min = 0, int $max = 1)
     {
         return $min + mt_rand() / mt_getrandmax() * ($max - $min);
     }

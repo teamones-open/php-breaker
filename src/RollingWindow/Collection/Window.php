@@ -6,12 +6,11 @@ class Window
 {
 
     /**
-     * 窗口块
      * @var Bucket[]
      */
     public array $windowBuckets = [];
 
-    // 窗口大小
+    // windows size
     public int $windowSize = 0;
 
     /**
@@ -25,7 +24,7 @@ class Window
     }
 
     /**
-     * 减少
+     * reduce
      * @param int $start
      * @param int $count
      * @param callable $callback
@@ -38,7 +37,7 @@ class Window
     }
 
     /**
-     * 重置指定的窗口块
+     * reset bucket
      * @param int $offset
      */
     public function resetBucket(int $offset): void
@@ -47,7 +46,6 @@ class Window
     }
 
     /**
-     * 初始化窗口
      * @param int $size
      */
     public function __construct(int $size)
@@ -59,7 +57,7 @@ class Window
     }
 
     /**
-     * 销毁创建对象
+     * destroy
      */
     public function destroy(): void
     {

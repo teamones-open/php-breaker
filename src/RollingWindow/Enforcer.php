@@ -18,7 +18,6 @@ class Enforcer
 
 
     /**
-     * 设置配置
      * @param array $config
      */
     public static function setConfig(array $config = [])
