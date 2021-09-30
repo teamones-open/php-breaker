@@ -2,68 +2,191 @@
 
 namespace Teamones\Breaker;
 
+use Teamones\Breaker\Cache\Redis;
 use Teamones\Breaker\Adapters\CircuitRedisAdapter;
 use Teamones\Breaker\Driver\CircuitBreaker;
-use Teamones\Breaker\Adapters\GoogleRedisGoogleAdapter;
 use Teamones\Breaker\Driver\GoogleBreaker;
-use Teamones\Breaker\Cache\Redis;
 
+/**
+ * Class Redis
+ * @package support
+ *
+ *  * Strings methods
+ * @method static void setGlobalSettings(array $settings)
+ * @method static array getGlobalSettings()
+ * @method static void setServiceSettings(string $service, array $settings)
+ * @method static mixed getServiceSetting(string $service, string $setting)
+ * @method static bool isAvailable(string $service)
+ * @method static void failure(string $service)
+ * @method static void success(string $service)
+ */
 class BreakerFactory
 {
+    // 1s = 1000ms
+    const SECONDS = 1000;
+
     /**
      * @var CircuitBreaker|GoogleBreaker|null
      */
     protected static $_instance = null;
 
     /**
-     * 初始化
+     * breaker config
+     * @var array
+     */
+    protected static array $_config = [];
+
+    /**
+     * Netflix hysrtix breaker default windows config
+     * @var int[]
+     */
+    protected static array $_circuitWindowConfigs = [
+        'time_window' => 20, // Open circuit time (s)
+        'failure_rate_threshold' => 15, // Open circuit failure rate
+        'interval_to_half_open' => 10, // Half open time (seconds) retry
+    ];
+
+    /**
+     * Google SRE breaker default windows config
+     * @var int[]
+     */
+    protected static array $_googleWindowConfigs = [
+        'time_window' => 10, // Window time (s)
+        'buckets' => 15, // Window buckets
+        'k' => 4, // Multiple value
+    ];
+
+    /**
+     * 设置配置
+     */
+    public static function setConfig($config)
+    {
+        if (empty($config['type']) && !in_array($config['type'], ['google', 'circuit'])) {
+            throw new \RuntimeException("Breaker config type error.");
+        }
+
+        // Set type param
+        self::$_config['type'] = $config['type'];
+
+        // Check whether the config parameters are complete
+        if ($config['type'] === 'circuit') {
+            /**
+             * Netflix hysrtix breaker default config
+             * [
+             *      // requires
+             *      'type' => 'circuit',
+             *      'server' => [
+             *          'name' => 'test',
+             *          'uuid' => '00a5ca80-4fe9-11eb-875c-c3e67d5eac81'
+             *      ],
+             *      // optional
+             *     'time_window' => 20, // default value 20s
+             *     'failure_rate_threshold' => 15, // default value  15%
+             *     'interval_to_half_open' => 10 // default value  10s
+             * ]
+             */
+
+            // Server parameters is requires
+            if (empty($config['server']['name']) || empty($config['server']['uuid'])) {
+                throw new \RuntimeException("Circuit breaker config server param is requires.");
+            }
+
+            // Set server param
+            self::$_config['server'] = $config['server'];
+
+            // Set windows config
+            foreach (self::$_circuitWindowConfigs as $key => $value) {
+                self::$_config[$key] = $config[$key] ?? $value;
+            }
+        } else {
+            /**
+             * Google SRE breaker default config
+             * [
+             *      // requires
+             *      'type' => 'google',
+             *      'services' => ['im', 'log', 'order'],
+             *      // optional
+             *     'time_window' => 10, // default value 10s
+             *     'buckets' => 40, // default value  40
+             *     'k' => 1.5 // default value  10s
+             * ]
+             */
+
+            // Server parameters is requires
+            if (empty($config['services'])) {
+                throw new \RuntimeException("Google breaker config services param is requires.");
+            }
+
+            // Set servers param
+            self::$_config['services'] = $config['services'];
+
+            // Set windows config
+            foreach (self::$_googleWindowConfigs as $key => $value) {
+                self::$_config[$key] = $config[$key] ?? $value;
+            }
+        }
+    }
+
+    /**
+     * initialize
+     * @return CircuitBreaker|GoogleBreaker|null
      */
     protected static function instance()
     {
-
         if (!isset(static::$_instance)) {
-            // redis连接句柄
-            $redis = Redis::connection();
 
-            // 设置当前熔断器命名空间，读取当前服务名称加上随机数
-            $config = config('breaker', []);
-            if (!isset($config)) {
-                throw new \RuntimeException("Breaker config not found");
+            if (empty(self::$_config)) {
+                // Read independent config
+                $config = config('breaker', []);
+
+                if (empty($config)) {
+                    throw new \RuntimeException("Breaker config not found.");
+                }
+
+                self::setConfig($config);
             }
 
-            // redis namespace
-            $redisNamespace = $config['discovery']['server_name'] . "_" . $config['discovery']['server_uuid'];
-
-
-            // 判断使用哪种熔断器模型
-            $breakerType = !empty($config['type']) ? $config['type'] : 'circuit';
-            switch ($breakerType) {
-                default:
+            var_dump(self::$_config);
+            // Determine which breaker to use
+            switch (self::$_config['type']) {
                 case 'circuit':
-                    $adapter = new CircuitRedisAdapter($redis, $redisNamespace);
+                    // Netflix Hysrtix Breaker
+
+                    // Set the current breaker namespace and read the current service name plus a random number
+                    $redisNamespace = self::$_config['server']['name'] . "_" . self::$_config['server']['uuid'];
+
+                    // Init redis adapter
+                    $adapter = new CircuitRedisAdapter(Redis::connection(), $redisNamespace);
 
                     // Set redis adapter for CB
                     CircuitBreaker::setAdapter($adapter);
 
                     // Configure settings for CB
                     CircuitBreaker::setGlobalSettings([
-                        'timeWindow' => 20, // 开路时间（秒）
-                        'failureRateThreshold' => 15, // 开路故障率
-                        'intervalToHalfOpen' => 10, // 半开时间（秒）重试
+                        'timeWindow' => self::$_config['time_window'],
+                        'failureRateThreshold' => self::$_config['failure_rate_threshold'],
+                        'intervalToHalfOpen' => self::$_config['interval_to_half_open'],
                     ]);
                     static::$_instance = CircuitBreaker::class;
                     break;
                 case 'google':
+                    // Google SRE Breaker
+
                     // Configure settings for GB
                     GoogleBreaker::setGlobalSettings([
-                        'interval' => 250, // 每个块间隔250ms
-                        'buckets' => 40, // 一共分40个窗口
-                        'k' => 1.5, // 倍值
+                        'interval' => intval((self::$_config['time_window'] * self::SECONDS) / self::$_config['buckets']),
+                        'buckets' => intval(self::$_config['buckets']),
+                        'k' => self::$_config['k'],
                     ]);
-                    static::$_instance = CircuitBreaker::class;
+
+                    // Init services
+                    GoogleBreaker::instanceServices(self::$_config['services']);
+
+                    static::$_instance = GoogleBreaker::class;
                     break;
             }
         }
+
         return static::$_instance;
     }
 
