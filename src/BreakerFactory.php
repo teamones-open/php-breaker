@@ -146,7 +146,6 @@ class BreakerFactory
                 self::setConfig($config);
             }
 
-            var_dump(self::$_config);
             // Determine which breaker to use
             switch (self::$_config['type']) {
                 case 'circuit':
