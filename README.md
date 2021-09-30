@@ -1,10 +1,122 @@
-# php-breaker
-webman 熔断器组件
+# Breaker
+[webman](https://github.com/walkor/webman)  熔断器组件
+
+# Features
 
 - circuit-breaker 熔断器 继承 leocarmo/circuit-breaker-php 组件
 - google-sre-breaker 熔断器
 
-# 断路器
+# Document
+
+编写中
+
+# Install
+
+```
+composer require teamones/breaker
+```
+
+# Config
+
+## circuit-breaker 熔断器
+
+```php
+// config/breaker.php
+
+return = [
+    // requires
+    'type' => 'circuit', // 熔断器类型
+    'server' => [
+        'name' => 'saas', // 当前服务名称
+        'uuid' => '00a5ca80-4fe9-11eb-875c-c3e67d5eac81' // 随机码
+    ],
+    // optional
+    'time_window' => 20, // 开路窗口时间 默认值 20s
+    'failure_rate_threshold' => 15, // 故障率阈值 默认值 15%
+    'interval_to_half_open' => 10 // 半开路窗口时间 默认值 10s
+];
+```
+
+## google-sre-breaker 熔断器
+
+```php
+// config/breaker.php
+
+return = [
+   // requires
+    'type' => 'google', // 熔断器类型
+    'services' => ['im'], // 访问服务列表
+    // optional
+    'time_window' => 10, // 滑动窗口时间 默认值 10s
+    'buckets' => 40, // 小的窗口数量  默认 40 （默认每个小窗口的时间跨度为250ms）
+    'k' => 1.5 // 倍值 默认1.5
+];
+```
+
+# Quick Start
+
+## 设置熔断器配置
+
+有两种方式
+
+**1、调用 config/breaker.php 配置文件**
+
+**2、手动设置**
+
+```php
+ $circuitConfig = [
+      // requires
+    'type' => 'circuit', // 熔断器类型
+    'server' => [
+        'name' => 'saas', // 当前服务名称
+        'uuid' => '00a5ca80-4fe9-11eb-875c-c3e67d5eac81' // 随机码
+    ],
+    // optional
+    'time_window' => 20, // 开路窗口时间 默认值 20s
+    'failure_rate_threshold' => 15, // 故障率阈值 默认值 15%
+    'interval_to_half_open' => 10 // 半开路窗口时间 默认值 10s
+];
+
+
+$googleConfig = [
+    // requires
+    'type' => 'google', // 熔断器类型
+    'services' => ['im'], // 访问服务列表
+    // optional
+    'time_window' => 10, // 滑动窗口时间 默认值 10s
+    'buckets' => 40, // 小的窗口数量  默认 40 （默认每个小窗口的时间跨度为250ms）
+    'k' => 1.5 // 倍值 默认1.5
+];
+
+BreakerFactory::setConfig($circuitConfig);
+```
+
+## 使用
+
+```php
+use Yurun\Util\HttpRequest; // 这个非必须
+
+// im 为当前请求服务名
+$service = 'im';
+
+if (BreakerFactory::isAvailable($service)) { 
+    // …… 此处省略服务调用过程
+    
+    // 用 http 调用举例 使用 Yurun\Util\HttpRequest
+    $httpRequest = new HttpRequest;
+    $res = $httpRequest->timeout(30000, 500)->get('http://www.baidu.com');
+    
+    if ($res->getStatusCode() === 200) {
+       // 请求成功设置
+       BreakerFactory::success($service);
+    } else {
+       // 请求失败设置
+       BreakerFactory::failure($service);
+    }
+}
+```
+
+# Netflix Hysrtix 断路器
 
 熔断机制其实是参考了我们日常生活中的保险丝的保护机制，当电路超负荷运行时，保险丝会自动的断开，从而保证电路中的电器不受损害。而服务治理中的熔断机制，指的是在发起服务调用的时候，如果被调用方返回的错误率超过一定的阈值，那么后续的请求将不会真正发起请求，而是在调用方直接返回错误
 
@@ -24,7 +136,7 @@ webman 熔断器组件
 
 ![image](./circuit_breaker.png)
 
-# Google Sre过载保护算法
+# Google SRE 过载保护算法
 
 https://sre.google/sre-book/handling-overload/#eq2101
 
