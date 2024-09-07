@@ -1,8 +1,8 @@
 <?php
 
-namespace WebmanMicro\PhpBreaker\RollingWindow\Collection;
+namespace Teamones\Breaker\RollingWindow\Collection;
 
-use WebmanMicro\PhpBreaker\RollingWindow\Time\Timex;
+use Teamones\Breaker\RollingWindow\Time\Timex;
 
 class RollingWindow
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace WebmanMicro\PhpBreaker\Cache;
+namespace Teamones\Breaker\Cache;
 
 use Illuminate\Redis\RedisManager;
 

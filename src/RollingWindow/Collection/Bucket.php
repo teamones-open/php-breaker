@@ -1,6 +1,6 @@
 <?php
 
-namespace WebmanMicro\PhpBreaker\RollingWindow\Collection;
+namespace Teamones\Breaker\RollingWindow\Collection;
 
 class Bucket
 {

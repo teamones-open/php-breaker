@@ -1,16 +1,22 @@
 {
-    "name": "webman-micro/php-breaker",
+    "name": "teamones/breaker",
+    "description": "webman framework breaker component",
     "type": "library",
-    "license": "MIT",
-    "description": "Webman plugin breaker component",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Weijer Cheng",
+            "email": "weiwei163@foxmail.com"
+        }
+    ],
     "require": {
-        "php": ">=7.4",
-        "leocarmo/circuit-breaker-php": "^3.0",
-        "workbunny/webman-shared-cache": "^0.5.3"
+        "php": ">=7.3.0",
+        "ext-redis": "*",
+        "leocarmo/circuit-breaker-php": "^3.0"
     },
     "autoload": {
         "psr-4": {
-            "WebmanMicro\\PhpBreaker\\": "src/"
+            "Teamones\\Breaker\\": "src/"
         }
     }
 }

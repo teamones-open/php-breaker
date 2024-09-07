@@ -1,12 +1,11 @@
 <?php
 
-namespace WebmanMicro\PhpBreaker;
+namespace Teamones\Breaker;
 
-use WebmanMicro\PhpBreaker\Cache\Redis;
-use WebmanMicro\PhpBreaker\Adapters\CircuitRedisAdapter;
-use WebmanMicro\PhpBreaker\Driver\CircuitBreaker;
-use WebmanMicro\PhpBreaker\Driver\GoogleBreaker;
-use Workbunny\WebmanSharedCache\Cache;
+use Teamones\Breaker\Cache\Redis;
+use Teamones\Breaker\Adapters\CircuitRedisAdapter;
+use Teamones\Breaker\Driver\CircuitBreaker;
+use Teamones\Breaker\Driver\GoogleBreaker;
 
 /**
  * Class Redis
@@ -88,7 +87,7 @@ class BreakerFactory
              */
 
             // Server parameters is requires
-            if (empty($config['server']['name'])) {
+            if (empty($config['server']['name']) || empty($config['server']['uuid'])) {
                 throw new \RuntimeException("Circuit breaker config server param is requires.");
             }
 
@@ -138,7 +137,7 @@ class BreakerFactory
 
             if (empty(self::$_config)) {
                 // Read independent config
-                $config = config('plugin.webman-micro.php-breaker.app', []);
+                $config = config('breaker', []);
 
                 if (empty($config)) {
                     throw new \RuntimeException("Breaker config not found.");
@@ -153,7 +152,7 @@ class BreakerFactory
                     // Netflix Hysrtix Breaker
 
                     // Set the current breaker namespace and read the current service name plus a random number
-                    $redisNamespace = self::$_config['server']['name'] . "_" . Cache::Get('service_uuid');
+                    $redisNamespace = self::$_config['server']['name'] . "_" . self::$_config['server']['uuid'];
 
                     // Init redis adapter
                     $adapter = new CircuitRedisAdapter(Redis::connection(), $redisNamespace);

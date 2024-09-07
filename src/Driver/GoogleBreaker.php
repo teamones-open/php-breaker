@@ -1,9 +1,9 @@
 <?php
 
-namespace WebmanMicro\PhpBreaker\Driver;
+namespace Teamones\Breaker\Driver;
 
-use WebmanMicro\PhpBreaker\RollingWindow\Collection\RollingWindow;
-use WebmanMicro\PhpBreaker\RollingWindow\Collection\Bucket;
+use Teamones\Breaker\RollingWindow\Collection\RollingWindow;
+use Teamones\Breaker\RollingWindow\Collection\Bucket;
 
 class GoogleBreaker
 {
