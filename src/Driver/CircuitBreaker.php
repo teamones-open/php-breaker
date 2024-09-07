@@ -1,6 +1,6 @@
 <?php
 
-namespace Teamones\Breaker\Driver;
+namespace WebmanMicro\PhpBreaker\Driver;
 
 class CircuitBreaker extends \LeoCarmo\CircuitBreaker\CircuitBreaker
 {

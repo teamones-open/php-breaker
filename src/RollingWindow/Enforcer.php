@@ -1,8 +1,8 @@
 <?php
 
-namespace Teamones\Breaker\RollingWindow;
+namespace WebmanMicro\PhpBreaker\RollingWindow;
 
-use Teamones\Breaker\RollingWindow\Collection\RollingWindow;
+use WebmanMicro\PhpBreaker\RollingWindow\Collection\RollingWindow;
 
 class Enforcer
 {

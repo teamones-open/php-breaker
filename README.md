@@ -13,7 +13,7 @@
 # Install
 
 ```
-composer require teamones/breaker
+composer require webman-micro/php-breaker
 ```
 
 # Config
@@ -94,7 +94,7 @@ BreakerFactory::setConfig($circuitConfig);
 ## 使用
 
 ```php
-use Teamones\Breaker\BreakerFactory;
+use WebmanMicro\PhpBreaker\BreakerFactory;
 use Yurun\Util\HttpRequest; // 这个非必须
 
 // im 为当前请求服务名

@@ -1,6 +1,6 @@
 <?php
 
-namespace Teamones\Breaker\Adapters;
+namespace WebmanMicro\PhpBreaker\Adapters;
 
 use LeoCarmo\CircuitBreaker\CircuitBreaker;
 use \Illuminate\Redis\Connections\Connection;
@@ -9,7 +9,7 @@ class CircuitRedisAdapter implements \LeoCarmo\CircuitBreaker\Adapters\AdapterIn
 {
 
     /**
-     * @var \Illuminate\Redis\Connections\Connection
+     * @var Connection
      */
     protected Connection $redis;
 

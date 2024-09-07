@@ -1,6 +1,6 @@
 <?php
 
-namespace Teamones\Breaker\RollingWindow\Time;
+namespace WebmanMicro\PhpBreaker\RollingWindow\Time;
 
 class Timex
 {
